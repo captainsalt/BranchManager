@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BranchManager.Console/BranchManager.CLI.csproj" />
+  <Project Path="BranchManager.Core/BranchManager.Core.csproj" />
+  <Project Path="BranchManager/BranchManager.WPF.csproj" />
+  <Project Path="BranchManger.Tests/BranchManger.Tests.csproj" Id="6a1d2586-14a5-4b55-9d6e-5833f3c927e2" />
+</Solution>
