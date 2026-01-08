@@ -2,7 +2,7 @@
 
 namespace BranchManager.Core;
 
-public record Branch(DirectoryInfo DirInfo, string LocalName, string? RemoteName);
+public record Branch(DirectoryInfo DirInfo, string LocalName, string? RemoteName, string LatestCommitMessage);
 
 public static class BranchManager
 {
@@ -17,8 +17,10 @@ public static class BranchManager
         {
             using var repo = new Repository(dirInfo.FullName);
             var repoBranches = repo.Branches
-                .Where(b => b.FriendlyName.Trim() != "main" && b.FriendlyName.Trim() != "master")
-                .Select(b => new Branch(dirInfo, b.FriendlyName, b.RemoteName))
+                .Where(b => b.FriendlyName.Trim() != "main")
+                .Where(b => b.FriendlyName.Trim() != "master")
+                .Where(b => !b.IsRemote)
+                .Select(b => new Branch(dirInfo, b.FriendlyName, b.RemoteName, b.Commits.First().MessageShort))
                 .ToList();
 
             branches.AddRange(repoBranches);
