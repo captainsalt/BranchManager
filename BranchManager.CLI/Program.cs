@@ -19,7 +19,7 @@ internal class Program
         var padding = branches.Max(b => b.DirInfo.Name.Length);
         var prompt = new MultiSelectionPrompt<Branch>()
             .Title("Select branches to delete")
-            .UseConverter(b => $"{b.DirInfo.Name.PadRight(padding)} -> {b.LocalName}");
+            .UseConverter(b => $"{b.DirInfo.Name.PadRight(padding)} -> {b.LocalName} \"{b.LatestCommitMessage}\"");
 
         prompt.AddChoices(branches);
         return prompt;

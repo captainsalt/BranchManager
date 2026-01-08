@@ -16,9 +16,10 @@ public static class BranchManager
         foreach (var dirInfo in validRepositories)
         {
             using var repo = new Repository(dirInfo.FullName);
+            var ignoredBranches = new List<string>(["main", "master"]);
+
             var repoBranches = repo.Branches
-                .Where(b => b.FriendlyName.Trim() != "main")
-                .Where(b => b.FriendlyName.Trim() != "master")
+                .Where(b => !ignoredBranches.Contains(b.FriendlyName))
                 .Where(b => !b.IsRemote)
                 .Select(b => new Branch(dirInfo, b.FriendlyName, b.RemoteName, b.Commits.First().MessageShort))
                 .ToList();
