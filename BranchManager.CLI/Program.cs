@@ -1,10 +1,12 @@
-﻿using BranchManager.Core;
+﻿using System.IO;
+using BranchManager.Core;
 using Spectre.Console;
 using Core = BranchManager.Core;
-using System.IO;
 
 internal class Program
 {
+    private const string CONFIG_FILE = "config.txt";
+
     private static void Main(string[] args)
     {
         var repositories = Core.BranchManager.GetBranches(new DirectoryInfo(GetDirectoryPath()));
@@ -27,16 +29,15 @@ internal class Program
 
     static string GetDirectoryPath()
     {
-        var configFile = "config.txt";
-        if (!File.Exists(configFile)) File.Create(configFile).Dispose();
+        if (!File.Exists(CONFIG_FILE)) File.Create(CONFIG_FILE).Dispose();
 
-        var storedPath = File.ReadAllText(configFile).Trim();
+        var repositoryRootDirectory = File.ReadAllText(CONFIG_FILE).Trim();
 
-        if (Directory.Exists(storedPath))
-            return storedPath;
+        if (Directory.Exists(repositoryRootDirectory))
+            return repositoryRootDirectory;
 
-        var desiredPath = AnsiConsole.Ask<string>("Insert the path to the root directory of your repositories");
-        File.WriteAllText(configFile, desiredPath);
-        return File.ReadAllText(configFile).Trim();
+        repositoryRootDirectory = AnsiConsole.Ask<string>("Insert the path to the root directory of your repositories");
+        File.WriteAllText(CONFIG_FILE, repositoryRootDirectory.Trim());
+        return File.ReadAllText(CONFIG_FILE).Trim();
     }
 }
