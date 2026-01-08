@@ -35,7 +35,7 @@ internal class Program
         if (Directory.Exists(storedPath))
             return storedPath;
 
-        var desiredPath = AnsiConsole.Ask<string>("What's the root directory to look in?");
+        var desiredPath = AnsiConsole.Ask<string>("Insert the path to the root directory of your repositories");
         File.WriteAllText(configFile, desiredPath);
         return File.ReadAllText(configFile).Trim();
     }
