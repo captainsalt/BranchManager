@@ -34,14 +34,26 @@ public static class BranchManager
     {
         foreach (var branch in branches)
         {
-            using var repo = new Repository(branch.DirInfo.FullName);
-            var mainBranch = repo.Branches["master"]
-                ?? repo.Branches["main"]
-                ?? throw new Exception("Could not switch to main/master branch");
+            try
+            {
+                using var repo = new Repository(branch.DirInfo.FullName);
+                repo.Branches.Remove(branch.LocalName);
+            }
+            catch (LibGit2SharpException ex)
+            {
+                if (ex.Message.StartsWith($"cannot delete branch"))
+                {
+                    Console.WriteLine($"Cannot delete branch {branch}");
+                    Console.WriteLine(ex.Message);
+                    continue;
+                }
 
-            // TODO: Do this once per repository
-            Commands.Checkout(repo, mainBranch);
-            repo.Branches.Remove(branch.LocalName);
+                throw;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
