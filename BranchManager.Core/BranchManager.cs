@@ -4,6 +4,10 @@ namespace BranchManager.Core;
 
 public record Branch(DirectoryInfo DirInfo, string LocalName, string? RemoteName, string LatestCommitMessage);
 
+public class CannotDeleteBranch(string message, Exception ex) : Exception(message, ex)
+{
+}
+
 public static class BranchManager
 {
     public static List<Branch> GetBranches(DirectoryInfo rootDir)
@@ -30,7 +34,7 @@ public static class BranchManager
         return branches;
     }
 
-    public static void DeleteBranches(List<Branch> branches)
+    public static void DeleteBranches(List<Branch> branches, bool ignoreBranchDeletionExceptions = false)
     {
         foreach (var branch in branches)
         {
@@ -43,9 +47,10 @@ public static class BranchManager
             {
                 if (ex.Message.StartsWith($"cannot delete branch"))
                 {
-                    Console.WriteLine($"Cannot delete branch {branch}");
-                    Console.WriteLine(ex.Message);
-                    continue;
+                    if (ignoreBranchDeletionExceptions) 
+                        continue;
+
+                    throw new CannotDeleteBranch($"Cannot delete branch {branch}", ex);
                 }
 
                 throw;
